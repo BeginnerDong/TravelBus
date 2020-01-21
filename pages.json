@@ -1,0 +1,192 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页",//设置页面标题文字
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/seach/seach",
+			"style": {
+				"navigationBarTitleText": "搜索",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/seachResult/seachResult",
+			"style": {
+				"navigationBarTitleText": "搜索",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/linePlan/linePlan",
+			"style": {
+				"navigationBarTitleText": "路线规划",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/BusLineDetail/BusLineDetail",
+			"style": {
+				"navigationBarTitleText": "线路详情",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/play/play",
+			"style": {
+				"navigationBarTitleText": "周边玩",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/playDetail/playDetail",
+			"style": {
+				"navigationBarTitleText": "详情",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/orderConfirm/orderConfirm",
+			"style": {
+				"navigationBarTitleText": "确认购买",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/orderPay/orderPay",
+			"style": {
+				"navigationBarTitleText": "支付方式",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/car/car",
+			"style": {
+				"navigationBarTitleText": "智能包车",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/user/user",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"onReachBottomDistance":100,
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/user-setUp/user-setUp",
+			"style": {
+				"navigationBarTitleText": "设置",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/user-uploadPhoto/user-uploadPhoto",
+			"style": {
+				"navigationBarTitleText": "上传头像",
+				"onReachBottomDistance":100,
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/user-setUp-nickname/user-setUp-nickname",
+			"style": {
+				"navigationBarTitleText": "填写昵称",
+				"onReachBottomDistance":100,
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/user-setUp-phone/user-setUp-phone",
+			"style": {
+				"navigationBarTitleText": "填写联系方式",
+				"onReachBottomDistance":100,
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/user-myPlay/user-myPlay",
+			"style": {
+				"navigationBarTitleText": "周边游",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/user-myPlay-refund/user-myPlay-refund",
+			"style": {
+				"navigationBarTitleText": "退款",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/user-byCar/user-byCar",
+			"style": {
+				"navigationBarTitleText": "包车",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/user-contactUs/user-contactUs",
+			"style": {
+				"navigationBarTitleText": "联系我们",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/driver-login/driver-login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/driverUser/driverUser",
+			"style": {
+				"navigationBarTitleText": "司机",
+				"onReachBottomDistance":100,
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/driverUser-salfSetting/driverUser-salfSetting",
+			"style": {
+				"navigationBarTitleText": "安全设置",
+				"onReachBottomDistance":100,
+				"navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/driverUser-changePswd/driverUser-changePswd",
+			"style": {
+				"navigationBarTitleText": "修改密码",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/driverUser-bindingPlates/driverUser-bindingPlates",
+			"style": {
+				"navigationBarTitleText": "绑定车牌",
+				"onReachBottomDistance":100
+			}
+		}
+    ],
+	"globalStyle": {
+		//"navigationStyle":"custom",
+		"navigationBarTextStyle": "black",//导航栏文字蓝色
+		"navigationBarTitleText": "旅游巴士",
+		"navigationBarBackgroundColor": "#fff"
+	},
+	"condition": { //模式配置，仅开发期间生效
+		"current": 0, //当前激活的模式(list 的索引项)
+		"list": [{
+			"name": "", //模式名称
+			"path": "", //启动页面，必选
+			"query": "" //启动参数，在页面的onLoad函数里面得到
+		}]
+	}
+}
