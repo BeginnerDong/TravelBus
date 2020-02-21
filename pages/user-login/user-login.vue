@@ -1,5 +1,5 @@
 <template>
-	<view v-if="showAll">
+	<view>
 	
 		<view class="loginCont">
 			<view class="fs18 ftw title">账号登录</view>
@@ -17,7 +17,7 @@
 		<view class="submitbtn" style="margin-top: 200rpx;">
 			<button class="btn" type="button" @click="submit">登录</button>
 		</view>
-		
+		<view style="margin: 0 auto;width: 80%;" @click="Router.navigateTo({route:{path:'/pages/user-register/user-register'}})">没有账号，去注册</view>
 		
 	</view>
 </template>
@@ -37,13 +37,7 @@
 		
 		onLoad(options) {
 			const self = this;
-			if (uni.getStorageSync('driverToken')&&uni.getStorageSync('driverInfo').user_type==1) {
-				uni.redirectTo({
-					url: '/pages/driverUser/driverUser'
-				})
-			}else{
-				self.showAll = true
-			}
+			
 		},
 		
 		methods: {
@@ -60,16 +54,16 @@
 					const callback = (res) => {
 						if (res.solely_code == 100000) {
 							console.log(res);
-							uni.setStorageSync('driverToken', res.token);
-							uni.setStorageSync('driverInfo', res.info);
-							uni.redirectTo({
-								url: '/pages/driverUser/driverUser'
+							uni.setStorageSync('userToken', res.token);
+							uni.setStorageSync('userInfo', res.info);
+							uni.navigateBack({
+								delta:1
 							})
 						} else {
 							self.$Utils.showToast(res.msg,'none')
 						}
 					}
-					self.$apis.driverLogin(postData, callback);
+					self.$apis.userLogin(postData, callback);
 				} else {
 					self.$Utils.showToast('请补全登录信息', 'none')
 				};

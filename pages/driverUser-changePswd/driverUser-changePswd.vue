@@ -5,25 +5,25 @@
 			<view class="item">
 				<view class="tit">原始密码</view>
 				<view class="input">
-					<input type="password" value="" placeholder="" placeholder-class="placeholder">
+					<input type="password" v-model="submitData.o_password" placeholder="请输入原密码" placeholder-class="placeholder">
 				</view>
 			</view>
 			<view class="item">
 				<view class="tit">新密码</view>
 				<view class="input">
-					<input type="password" value="" placeholder="" placeholder-class="placeholder">
+					<input type="password" v-model="submitData.n_password" placeholder="请输入新密码" placeholder-class="placeholder">
 				</view>
 			</view>
 			<view class="item">
 				<view class="tit">确认新密码</view>
 				<view class="input">
-					<input type="password" value="" placeholder="" placeholder-class="placeholder">
+					<input type="password" v-model="submitData.passwordCopy" placeholder="请确认新密码" placeholder-class="placeholder">
 				</view>
 			</view>
 		</view>
 		
 		<view class="submitbtn" style="margin-top: 200rpx;">
-			<button class="btn" type="submit">确认</button>
+			<button class="btn" type="submit" @click="$Utils.stopMultiClick(submit)">确认</button>
 		</view>
 		
 		
@@ -34,18 +34,79 @@
 	export default {
 		data() {
 			return {
-				Router:this.$Router,
-				showView: false,
-				score:'',
-				wx_info:{}
+				Router: this.$Router,
+				Utils: this.$Utils,
+				index: 0,
+				is_show: false,
+				type: '',
+				mode: '',
+				submitData: {
+					o_password: '',
+					n_password: '',
+					passwordCopy: ''
+				}
 			}
 		},
-		onLoad() {
+		onLoad(options) {
 			const self = this;
-			//self.$Utils.loadAll(['getMainData'], self);
+			uni.setStorageSync('canClick', true);
 		},
+
 		methods: {
 
+
+
+			submit() {
+				const self = this;
+				uni.setStorageSync('canClick', false);
+				var newObject = self.$Utils.cloneForm(self.submitData);
+
+				const pass = self.$Utils.checkComplete(newObject);
+				console.log('pass', pass);
+				console.log('self.submitData', self.submitData)
+				if (pass) {
+					if (self.submitData.o_password != uni.getStorageSync('driverInfo').password) {
+						uni.setStorageSync('canClick', true);
+						self.$Utils.showToast('原密码错误', 'none');
+						return
+					};
+					if (self.submitData.n_password != self.submitData.passwordCopy) {
+						uni.setStorageSync('canClick', true);
+						self.$Utils.showToast('两次输入密码不一致', 'none');
+						return
+					};
+					self.passwordUpdate();
+				} else {
+					uni.setStorageSync('canClick', true);
+					self.$Utils.showToast('请补全信息', 'none')
+				};
+			},
+
+			passwordUpdate() {
+				const self = this;
+				const postData = {};
+				
+				postData.tokenFuncName = 'getDriverToken';
+				postData.data = {
+					password:self.submitData.n_password
+				};
+				const callback = (data) => {
+					if (data.solely_code == 100000) {
+						self.$Utils.showToast('修改成功,请重新登陆', 'none');
+						setTimeout(function() {
+							uni.removeStorageSync('driverToken');
+							uni.removeStorageSync('driverInfo');
+							uni.reLaunch({
+								url: '/pages/user/user'
+							});
+						}, 800);
+					} else {
+						uni.setStorageSync('canClick', true);
+						self.$Utils.showToast(data.msg, 'none', 1000)
+					}
+				};
+				self.$apis.userUpdate(postData, callback);
+			},
 
 		},
 	};

@@ -9,33 +9,34 @@
 			</view>
 		</view>
 		<view class="mglr4 pdt15 busLine">
-			<view class="item" v-for="(ptem,index) in busLineData" :key="index">
+			<view class="item" v-for="(item,index) in mainData" :key="index">
 				<view class="infor">
-					<view class="flexRowBetween" @click="Router.navigateTo({route:{path:'/pages/BusLineDetail/BusLineDetail'}})">
-						<view class="title">高新9号线</view>
+					<view class="flexRowBetween" :data-id="item.id" 
+					@click="Router.navigateTo({route:{path:'/pages/BusLineDetail/BusLineDetail?id='+$event.currentTarget.dataset.id}})">
+						<view class="title">{{item.name}}</view>
 						<view><image class="arrowR" src="../../static/images/home-icon1.png" mode=""></image></view>
 					</view>
 					<view class="allList pdt15 flexRowBetween">
 						<view class="cont">
-							<view class="line">
+							<view class="line" v-if="item.stop&&item.stop.length>0">
 								<view class="left">始发</view>
 								<view class="dian"></view>
-								<view class="right">玫瑰大楼</view>
+								<view class="right">{{item.stop&&item.stop[0]?item.stop[0].name:''}}</view>
 							</view>
-							<view class="line">
+							<view class="line" v-if="item.stop&&item.stop.length>1">
 								<view class="left">途径</view>
 								<view class="dian"></view>
-								<view class="right">高新一号线</view>
+								<view class="right">{{item.stop&&item.stop[1]?item.stop[1].name:''}}</view>
 							</view>
 							<!-- 展示内容 -->
-							<view class="line" v-for="(item,index) in lineData" :key="index" v-show="is_lineShow">
+							<view class="line" v-for="(c_item,c_index) in item.stop" :key="index" v-if="is_lineShow&&c_index!=0&&c_index!=1&&c_index!=item.stop.length-1">
 								<view class="left"></view>
 								<view class="dian"></view>
-								<view class="right">{{item}}</view>
+								<view class="right">{{c_item.name}}</view>
 							</view>
 							
 							<!-- 省略内容 -->
-							<view class="omit" v-show="!is_lineShow">
+							<view class="omit" v-if="!is_lineShow">
 								<view class="dd"><span></span></view>
 								<view class="dd"><span></span></view>
 								<view class="dd"><span></span></view>
@@ -44,19 +45,19 @@
 							<view class="line">
 								<view class="left">终点</view>
 								<view class="dian"></view>
-								<view class="right">协同创新港(南门)</view>
+								<view class="right">{{item.stop&&item.stop[item.stop.length-1]?item.stop[item.stop.length-1].name:''}}</view>
 							</view>
 						</view>
-						<view class="rrOpen fs12 pubColor" @click="changeLine">
-							<view v-show="is_lineShow">收起<image class="arrow" src="../../static/images/home-icon2.png" mode=""></image></view>
-							<view v-show="!is_lineShow">展开<image class="arrow" src="../../static/images/home-icon2.png" mode=""></image></view>
+						<view class="rrOpen fs12 pubColor" @click="changeLine" v-if="item.stop.length>10">
+							<view v-if="is_lineShow">收起<image class="arrow" src="../../static/images/home-icon2.png" mode=""></image></view>
+							<view v-if="!is_lineShow">展开<image class="arrow" src="../../static/images/home-icon2.png" mode=""></image></view>
 						</view>
 					</view>
 				</view>
 				<view class="borderB1"></view>
 				<view class="infor flex">
 					<view class="fs10 color9">始发时间：</view>
-					<view class="fs15 ftw">07:00</view>
+					<view class="fs15 ftw">{{item.start}}</view>
 				</view>
 			</view>
 		</view>
@@ -104,25 +105,65 @@
 				is_show:false,
 				busLineData:[{},{},{}],
 				lineData:['融发心园','五桥新村','西部大道怡园路口','怡园路'],
-				is_lineShow:false
+				is_lineShow:true,
+				mainData:[]
 			}
 		},
-		onLoad() {
+		
+		onLoad(options) {
 			const self = this;
-			// self.$Utils.loadAll(['getMainData'], self);
+			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+			self.$Utils.loadAll(['getMainData'], self);
 		},
+		
+		onReachBottom() {
+			console.log('onReachBottom')
+			const self = this;
+			if (!self.isLoadAll && uni.getStorageSync('loadAllArray')) {
+				self.paginate.currentPage++;
+				self.getMainData()
+			};
+		},
+		
+		
 		methods: {
+			
 			changeLine(){
 				const self = this;
 				self.is_lineShow = !self.is_lineShow
 			},
+			
 			getMainData() {
 				const self = this;
-				console.log('852369')
 				const postData = {};
-				postData.tokenFuncName = 'getProjectToken';
-				self.$apis.orderGet(postData, callback);
-			}
+				postData.searchItem = {
+					thirdapp_id: 2,
+				};
+				postData.paginate = self.$Utils.cloneForm(self.paginate);
+				postData.getAfter = {
+					stop:{
+						tableName:'BusStop',
+						middleKey:'id',
+						key:'line_no',
+						searchItem:{
+							status:1
+						},
+						condition:'=',
+						order:{
+							listorder:'asc'
+						}
+					},
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.mainData.push.apply(self.mainData, res.info.data);
+						
+					}
+					self.$Utils.finishFunc('getMainData');
+					console.log('self.mainData', self.mainData)
+				};
+				self.$apis.busLineGet(postData, callback);
+			},
 		}
 	};
 </script>

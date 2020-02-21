@@ -5,18 +5,19 @@
 			<view class="flex rr">
 				<button class="seachBtn" type="button"></button>
 				<view class="input">
-					<input type="text" name="" value="" placeholder="搜索公交线路/车站" placeholder-class="placeholder" />
+					<input type="text" v-model="keywords" placeholder="搜索公交线路/车站" placeholder-class="placeholder" />
 				</view>
 			</view>
-			<view class="fs15 pubColor" @click="Router.navigateTo({route:{path:'/pages/seachResult/seachResult'}})">查询</view>
+			<view class="fs15 pubColor" @click="search">查询</view>
 		</view>
 		
 		<view class="mglr4 mgt20">
 			<view class="fs14 pdb10">线路</view>
 			<view class="notes radius10 fs13">
-				<view class="item flex" v-for="(item,index) in notesData" :key="index"  @click="Router.navigateTo({route:{path:'/pages/BusLineDetail/BusLineDetail'}})">
+				<view class="item flex" v-for="(item,index) in line" :key="index"  :data-id="item.id" 
+				@click="Router.navigateTo({route:{path:'/pages/BusLineDetail/BusLineDetail?id='+$event.currentTarget.dataset.id}})">
 					<view><image class="CarIcon" src="../../static/images/search-icon.png" mode=""></image></view>
-					<view>12路</view>
+					<view>{{item.name}}</view>
 				</view>
 			</view>
 		</view>
@@ -24,9 +25,10 @@
 		<view class="mglr4 mgt20">
 			<view class="fs14 pdb10">车站</view>
 			<view class="notes radius10 fs13">
-				<view class="item flex" v-for="(item,index) in notesData" :key="index" @click="Router.navigateTo({route:{path:'/pages/linePlan/linePlan'}})">
+				<view class="item flex" v-for="(item,index) in stop" :key="index" 
+				@click="Router.navigateTo({route:{path:'/pages/linePlan/linePlan'}})">
 					<view><image class="CarIcon" src="../../static/images/search-icon1.png" mode=""></image></view>
-					<view>钟楼(地铁站)</view>
+					<view>{{item.name}}</view>
 				</view>
 			</view>
 		</view>
@@ -43,22 +45,54 @@
 				showView: false,
 				wx_info:{},
 				is_show:false,
-				notesData:[{},{},{}]
+				notesData:[{},{},{}],
+				line:[],
+				stop:[],
+				keywords:''
 			}
 		},
 		
 		onLoad(options) {
 			const self = this;
+			if(options.keywords){
+				self.keywords = options.keywords;
+			}
+			self.$Utils.loadAll(['getMainData'], self);
 			// self.$Utils.loadAll(['getMainData'], self);
 		},
+		
 		methods: {
-			getMainData() {
+			
+			search(){
+				const self =  this;
+				self.getMainData(true)
+			},
+			
+			getMainData(isNew) {
 				const self = this;
-				console.log('852369')
+				if (isNew) {
+					self.mainData = [];
+				};
 				const postData = {};
-				postData.tokenFuncName = 'getProjectToken';
-				self.$apis.orderGet(postData, callback);
-			}
+				postData.tokenFuncName='getUserToken';
+				postData.data = {
+					search:self.keywords
+				};
+				const callback = (res) => {
+					if (res.solely_code ==100000) {
+						//self.mainData.push.apply(self.mainData,res.info.data)
+						if(res.info.line.data&&res.info.line.data.length>0){
+							self.line = res.info.line.data;
+						}
+						if(res.info.stop.data&&res.info.stop.data.length>0){
+							self.stop = res.info.stop.data;
+						}
+						
+					}
+					self.$Utils.finishFunc('getMainData');
+				};
+				self.$apis.searchLine(postData, callback);
+			},
 		}
 	};
 </script>

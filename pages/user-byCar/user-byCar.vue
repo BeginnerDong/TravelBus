@@ -2,29 +2,29 @@
 	<view>
 		
 		<view class="mglr4 pdt15">
-			<view class="ByCarinfor editLine boxShaow" v-for="(item,index) in byCarData" :key="index">
-				<view class="fs12 color9">提交时间：2020.01.21</view>
+			<view class="ByCarinfor editLine boxShaow" v-for="(item,index) in mainData" :key="index">
+				<view class="fs12 color9">提交时间：{{item.create_time}}</view>
 				<view class="item flexRowBetween">
 					<view class="ll">上车地点</view>
-					<view class="rr">西安高新大都会</view>
+					<view class="rr">{{item.title}}</view>
 				</view>
 				<view class="item flexRowBetween">
 					<view class="ll">下车地点</view>
-					<view class="rr">兵马俑</view>
+					<view class="rr">{{item.description}}</view>
 				</view>
 				<view class="item flexRowBetween">
 					<view class="ll">出发时间</view>
-					<view class="rr">2020年1月22日8点</view>
+					<view class="rr">{{item.keywords}}</view>
 				</view>
 				<view class="item flexRowBetween">
 					<view class="ll">人数</view>
-					<view class="rr">29人</view>
+					<view class="rr">{{item.score}}人</view>
 				</view>
 				<view class="item flexRowBetween">
 					<view class="ll">客服电话</view>
 					<view class="rr flexRowBetween">
-						<view>15623568988</view>
-						<view><image class="phoneIcon" src="../../static/images/my-charter-icon.png" mode=""></image></view>
+						<view>{{item.phone}}</view>
+						<view @click="tel()"><image class="phoneIcon" src="../../static/images/my-charter-icon.png" mode=""></image></view>
 					</view>
 				</view>
 			</view>
@@ -42,21 +42,74 @@
 				showView: false,
 				wx_info:{},
 				is_show:false,
-				byCarData:[{},{},{}]
+				byCarData:[{},{},{}],
+				mainData:[]
 			}
 		},
-		onLoad() {
+		
+		onLoad(options) {
 			const self = this;
-			// self.$Utils.loadAll(['getMainData'], self);
+			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+			self.$Utils.loadAll(['getMainData'], self);
 		},
+		
+		onReachBottom() {
+			console.log('onReachBottom')
+			const self = this;
+			if (!self.isLoadAll && uni.getStorageSync('loadAllArray')) {
+				self.paginate.currentPage++;
+				self.getMainData()
+			};
+		},
+		
 		methods: {
+			
 			getMainData() {
 				const self = this;
-				console.log('852369')
 				const postData = {};
-				postData.tokenFuncName = 'getProjectToken';
-				self.$apis.orderGet(postData, callback);
-			}
+				postData.searchItem = {
+					thirdapp_id: 2,
+					type:2
+				};
+				postData.paginate = self.$Utils.cloneForm(self.paginate);
+				
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.mainData.push.apply(self.mainData, res.info.data);
+					}
+					self.getLabelData()
+					console.log('self.mainData', self.mainData)
+				};
+				self.$apis.messageGet(postData, callback);
+			},
+			
+			getLabelData() {
+				const self = this;
+				const postData = {};
+				postData.searchItem = {
+					thirdapp_id: 2,
+					title:'客服'
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.labelData = res.info.data[0];
+						for (var i = 0; i < self.mainData.length; i++) {
+							self.mainData[i].phone = self.labelData.description
+						}
+					}
+					console.log('self.labelData', self.labelData)
+					self.$Utils.finishFunc('getMainData');
+				};
+				self.$apis.labelGet(postData, callback);
+			},
+			
+			tel(){
+				const self = this;
+				uni.makePhoneCall({
+					phoneNumber: self.labelData.description //仅为示例
+				});
+			},
+			
 		}
 	};
 </script>

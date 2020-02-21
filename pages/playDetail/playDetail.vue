@@ -1,12 +1,12 @@
 <template>
 	<view>
 		
-		<view class="detailxqBan">
-			<image src="../../static/images/details-img.png" mode=""></image>
+	 	<view class="detailxqBan">
+			<image :src="mainData.bannerImg&&mainData.bannerImg[0]?mainData.bannerImg[0].url:''" mode=""></image>
 		</view>
 		<view class="mglr4 pdtb10">
-			<view class="">[西安1牛背梁] 国家级森林公园，世界生物圈保护区！仅298元=2大人1小抢牛背梁套票~享含双床房1晚+门票2张+双早+免费停车！</view>
-			<view class="mgt5 price fs15 ftw">129</view>
+			<view class="">{{mainData.title}}</view>
+			<view class="mgt5 price fs15 ftw">{{mainData.price}}</view>
 		</view>
 		<view class="f5H5"></view>
 		
@@ -14,23 +14,19 @@
 			<view class="fs15 ftw mgb15">景点详情</view>
 			<view class="xqInfor fs13">
 				<view class="cont center">
-					<view>监管科洛杉矶港讲公开课开发商利君股份各个</view>
-					<view>监管科洛杉矶港讲公开课开发商利君股份各个几个卡</view>
-					<view>监管科洛杉矶港讲公开课开发商利君股份各个拉金刚认识</view>
-					<view><image class="w" src="../../static/images/details-img1.png" mode="widthFix"></image></view>
-					<view>估计多少个交流看法的时间</view>
-					<view>更进反馈登录手机个分类山沟经历</view>
-					<view>国际法大使馆领积分的市公检法是考虑过就过来</view>
+					<view class="content ql-editor" style="padding:0;"
+					v-html="mainData.content">
+					</view>
 				</view>
 			</view>
 		</view>
 		<view class="xqbotomBar pdlr4 pdt10 pdb10">
-			<view class="ite">
+			<view class="ite" @click="tel()">
 				<view><image src="../../static/images/details-icon.png" mode=""></image></view>
 				<view>客服</view>
 			</view>
 			<view class="submitbtn" style="width: 72%;">
-				<button class="Wbtn" type="button" @click="Router.navigateTo({route:{path:'/pages/orderConfirm/orderConfirm'}})">立即购买</button>
+				<button class="Wbtn" type="button"  @click="Utils.stopMultiClick(goBuy)">立即购买</button>
 			</view>
 		</view>
 		
@@ -43,23 +39,83 @@
 		data() {
 			return {
 				Router:this.$Router,
-				showView: false,
-				wx_info:{},
-				is_show:false
+				mainData:{},
+				Utils:this.$Utils,
 			}
 		},
-		onLoad() {
+		
+		onLoad(options) {
 			const self = this;
-			// self.$Utils.loadAll(['getMainData'], self);
+			self.id = options.id;
+			self.$Utils.loadAll(['getMainData','getLabelData'], self);
 		},
+		
+		onShow() {
+			const self = this;
+			self.orderList = [];
+			uni.removeStorageSync('payPro');
+		},
+		
 		methods: {
+			
+			getLabelData() {
+				const self = this;
+				const postData = {};
+				postData.searchItem = {
+					thirdapp_id: 2,
+					title:'客服'
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.labelData = res.info.data[0];
+					}
+					console.log('self.labelData', self.labelData)
+					self.$Utils.finishFunc('getLabelData');
+				};
+				self.$apis.labelGet(postData, callback);
+			},
+			
+			goBuy(){
+				const self = this;
+				uni.setStorageSync('canClick',false);
+				self.orderList.push(
+					{product_id:self.mainData.id,count:1,
+					type:1,product:self.mainData},
+				);
+				uni.setStorageSync('payPro', self.orderList);
+				
+				self.Router.navigateTo({route:{path:'/pages/orderConfirm/orderConfirm'}})
+				
+				uni.setStorageSync('canClick',true);
+			},
+			
+			//拨打客服电话
+			tel(){
+				const self = this;
+				uni.makePhoneCall({
+					phoneNumber: self.labelData.description //仅为示例
+				});
+			},
+			
 			getMainData() {
 				const self = this;
-				console.log('852369')
 				const postData = {};
-				postData.tokenFuncName = 'getProjectToken';
-				self.$apis.orderGet(postData, callback);
-			}
+				postData.searchItem = {
+					thirdapp_id: 2,
+					id: self.id
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.mainData = res.info.data[0];
+						const regex = new RegExp('<img', 'gi');
+						self.mainData.content = self.mainData.content.replace(regex, `<img style="max-width: 100%;"`);
+					}
+					console.log('self.mainData', self.mainData)
+					self.$Utils.finishFunc('getMainData');
+				};
+				self.$apis.productGet(postData, callback);
+			},
+			
 		}
 	};
 </script>

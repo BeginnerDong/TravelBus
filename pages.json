@@ -32,7 +32,8 @@
 			"path": "pages/BusLineDetail/BusLineDetail",
 			"style": {
 				"navigationBarTitleText": "线路详情",
-				"onReachBottomDistance":100
+				"onReachBottomDistance":100,
+				"enablePullDownRefresh": true
 			}
 		},
 		{
@@ -134,6 +135,20 @@
 			"path": "pages/user-contactUs/user-contactUs",
 			"style": {
 				"navigationBarTitleText": "联系我们",
+				"onReachBottomDistance":100
+			}
+		},
+		{
+			"path": "pages/user-login/user-login",
+			"style": {
+				"navigationBarTitleText": "用户登录",
+				"onReachBottomDistance":100
+			}
+		},
+		{ 
+			"path": "pages/user-register/user-register",
+			"style": {
+				"navigationBarTitleText": "用户注册",
 				"onReachBottomDistance":100
 			}
 		},

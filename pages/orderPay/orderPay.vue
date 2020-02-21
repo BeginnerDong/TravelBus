@@ -26,7 +26,7 @@
 			<view class="mgl15 flex">
 				总计<view class="price">66.8</view>
 			</view>
-			<view class="payBtn">提交订单</view>
+			<view class="payBtn">确认支付</view>
 		</view>
 		
 	</view>

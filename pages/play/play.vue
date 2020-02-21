@@ -13,11 +13,12 @@
 		
 		<view class="mglr4 pdt15">
 			<view class="playList">
-				<view class="item" v-for="(item,index) in playData" :key="index" @click="Router.navigateTo({route:{path:'/pages/playDetail/playDetail'}})">
-					<view class="pic"><image src="../../static/images/swim-around-img.png" mode=""></image></view>
+				<view class="item" v-for="(item,index) in mainData" :key="index" :data-id="item.id"
+				@click="Router.navigateTo({route:{path:'/pages/playDetail/playDetail?id='+$event.currentTarget.dataset.id}})">
+					<view class="pic"><image :src="item.mainImg&&item.mainImg[0]?item.mainImg[0].url:''" mode=""></image></view>
 					<view class="infor">
-						<view class="avoidOverflow">[西安1牛背梁] 国家级森林公园，世界生物圈保护区！</view>
-						<view class="pdt5 price ftw fs15">129</view>
+						<view class="avoidOverflow">{{item.title}}</view>
+						<view class="pdt5 price ftw fs15">{{item.price}}</view>
 					</view>
 				</view>
 			</view>
@@ -61,24 +62,57 @@
 		data() {
 			return {
 				Router:this.$Router,
-				showView: false,
-				wx_info:{},
-				is_show:false,
-				playData:[{},{},{},{}]
+				
+				mainData:[]
 			}
 		},
-		onLoad() {
+		
+		onLoad(options) {
 			const self = this;
-			// self.$Utils.loadAll(['getMainData'], self);
+			self.paginate = self.$Utils.cloneForm(self.$AssetsConfig.paginate);
+			self.$Utils.loadAll(['getMainData'], self);
 		},
+		
+		onReachBottom() {
+			console.log('onReachBottom')
+			const self = this;
+			if (!self.isLoadAll && uni.getStorageSync('loadAllArray')) {
+				self.paginate.currentPage++;
+				self.getMainData()
+			};
+		},
+		 
 		methods: {
+			
 			getMainData() {
 				const self = this;
-				console.log('852369')
 				const postData = {};
-				postData.tokenFuncName = 'getProjectToken';
-				self.$apis.orderGet(postData, callback);
-			}
+				postData.searchItem = {
+					thirdapp_id: 2,
+				};
+				postData.getBefore = {
+					caseData: {
+						tableName: 'Label',
+						searchItem: {
+							title: ['in', ['周边游']],
+						},
+						middleKey: 'category_id',
+						key: 'id',
+						condition: 'in',
+					},
+				};
+				postData.order = {
+					listorder:'desc'
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.mainData.push.apply(self.mainData, res.info.data);
+					}
+					self.$Utils.finishFunc('getMainData');
+					console.log('self.mainData', self.mainData)
+				};
+				self.$apis.productGet(postData, callback);
+			},
 		}
 	};
 </script>

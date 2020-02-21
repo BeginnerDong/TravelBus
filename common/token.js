@@ -265,19 +265,29 @@ class Token {
         
     }
     
-    getMerchantToken(callback,postData) { 
-        if((postData&&postData.refreshToken)||!uni.getStorageSync('merchant_token')){
-            uni.removeStorageSync('merchant_token');
-            uni.removeStorageSync('merchant_info');
-            uni.redirectTo({
-              url: '/pages/login/login'
+    getUserToken(callback,postData) { 
+        if((postData&&postData.refreshToken)||!uni.getStorageSync('userToken')){
+            uni.removeStorageSync('userToken');
+            uni.removeStorageSync('userInfo');
+            uni.reLaunch({
+              url: '/pages/user/user'
             });
         }else{
-            return uni.getStorageSync('merchant_token');
+            return uni.getStorageSync('userToken');
         }
     }
    
-
+	getDriverToken(callback,postData) {
+	    if((postData&&postData.refreshToken)||!uni.getStorageSync('driverToken')){
+	        uni.removeStorageSync('driverToken');
+	        uni.removeStorageSync('driverInfo');
+	        uni.reLaunch({
+	          url: '/pages/user/user'
+	        });
+	    }else{
+	        return uni.getStorageSync('driverToken');
+	    }
+	}
 
     getUserInfo(params,callback){
         var self = this;

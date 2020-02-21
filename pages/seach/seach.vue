@@ -5,22 +5,23 @@
 			<view class="flex rr">
 				<button class="seachBtn" type="button"></button>
 				<view class="input">
-					<input type="text" name="" value="" placeholder="搜索公交线路/车站" placeholder-class="placeholder" />
+					<input type="text" v-model="keywords"placeholder="搜索公交线路/车站" placeholder-class="placeholder" />
 				</view>
 			</view>
-			<view class="fs15 pubColor" @click="Router.navigateTo({route:{path:'/pages/seachResult/seachResult'}})">查询</view>
+			<view class="fs15 pubColor" @click="search">查询</view>
 		</view>
 		
 		<view class="mglr4 mgt15">
 			<view class="fs14 pdb10">搜索记录</view>
 			<view class="notes radius10 fs13">
-				<view class="item flex" v-for="(item,index) in notesData" :key="index">
+				<view class="item flex" v-for="(item,index) in historyDate" :key="index">
 					<view><image class="CarIcon" src="../../static/images/search-icon.png" mode=""></image></view>
-					<view>12路</view>
+					<view @click="clickSearch(item)">{{item}}</view>
 				</view>
 				
 				<view class="flexCenter pdt15 color6">
-					<view @click="popupShow">清除搜索记录</view>
+					<view @click="popupShow" v-if="historyDate.length>0">清除搜索记录</view>
+					<view @click="popupShow" v-else>暂无搜索记录</view>
 				</view>
 			</view>
 		</view>
@@ -32,7 +33,7 @@
 			<view class="fs13 color6 pdb20 borderB1">确定清空搜索记录吗？</view>
 			<view class="flex tip-button">
 				<view class="item"  @click="popupShow">取消</view>
-				<view class="item pubColor">确定</view>
+				<view class="item pubColor"  @click="clearHistory()">确定</view>
 			</view>
 		</view>
 		
@@ -48,28 +49,55 @@
 				wx_info:{},
 				is_show:false,
 				notesData:[{},{},{}],
-				is_popupShow:false
+				is_popupShow:false,
+				keywords:'',
+				historyDate:[],
 			}
 		},
 		
 		onLoad(options) {
 			const self = this;
-			// self.$Utils.loadAll(['getMainData'], self);
+			console.log(uni.getStorageSync('historyDate'))
+			if(uni.getStorageSync('historyDate')){
+				self.historyDate = uni.getStorageSync('historyDate')
+			};
+			console.log(self.historyDate)
 		},
+		
 		methods: {
+			
+			clickSearch(item){
+				const self = this;
+				self.Router.navigateTo({route:{path:'/pages/seachResult/seachResult?keywords='+item}});
+			},
+			
+			search(){
+				const self = this;
+				if(self.keywords!=''){
+					self.Router.navigateTo({route:{path:'/pages/seachResult/seachResult?keywords='+self.keywords}});
+					self.historyDate.push(self.keywords);
+					uni.setStorageSync('historyDate',self.historyDate);
+					self.keywords = '';
+				}else{
+					return
+				}
+			},
+			
+			clearHistory(){
+				const self = this;
+				self.historyDate = [];
+				uni.removeStorageSync('historyDate');
+				self.is_popupShow = !self.is_popupShow;
+				self.is_show = !self.is_show;
+			},
+			
 			popupShow(){
 				const self=this;
 				self.is_popupShow = !self.is_popupShow;
 				self.is_show = !self.is_show;
 				
 			},
-			getMainData() {
-				const self = this;
-				console.log('852369')
-				const postData = {};
-				postData.tokenFuncName = 'getProjectToken';
-				self.$apis.orderGet(postData, callback);
-			}
+			
 		}
 	};
 </script>

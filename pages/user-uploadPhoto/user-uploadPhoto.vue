@@ -44,10 +44,14 @@
 			//self.$Utils.loadAll(['getMainData'], self);
 		},
 		methods: {
+			
 			prev(){
 				const self = this;
-				self.$router.go(-1)
+				uni.navigateBack({
+					delta:1
+				})
 			},
+			
 			chooseImage(){
 				uni.chooseImage({
 					count: 1,

@@ -3,9 +3,10 @@
 		
 		<view class="mglr4 flexColumn topPhone">
 			<view><image class="phone-icon" src="../../static/images/contact-icon.png" mode=""></image></view>
-			<view class="fs16 mgt15">15623568912</view>
+			<view class="fs16 mgt15">{{object.phone}}</view>
 		</view>
-		<view class="map"><image src="../../static/images/map.png" mode=""></image></view>
+		<view class="map"> <map style="width: 100%; height: 934rpx;" :latitude="object.latitude" :longitude="object.longitude" :markers="covers">
+                </map></view>
 		
 	</view>
 	
@@ -16,23 +17,34 @@
 		data() {
 			return {
 				Router:this.$Router,
-				showView: false,
-				wx_info:{},
-				is_show:false
+				object:{}
 			}
 		},
 		onLoad() {
 			const self = this;
-			// self.$Utils.loadAll(['getMainData'], self);
+			//self.$Utils.loadAll(['getMainData'], self);
+			 self.object = uni.getStorageSync('userInfo').thirdApp;
+			
 		},
+		
 		methods: {
+			
 			getMainData() {
 				const self = this;
-				console.log('852369')
 				const postData = {};
-				postData.tokenFuncName = 'getProjectToken';
-				self.$apis.orderGet(postData, callback);
-			}
+				postData.searchItem = {
+					thirdapp_id: 2,
+					title:'客服'
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.mainData = res.info.data[0];
+					}
+					console.log('self.mainData', self.mainData)
+					self.$Utils.finishFunc('getMainData');
+				};
+				self.$apis.thirdappGet(postData, callback);
+			},
 		}
 	};
 </script>
