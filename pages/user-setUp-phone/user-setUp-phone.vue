@@ -1,7 +1,7 @@
 <template>
 	<view>
 		
-		<view class="pdlr4 whiteBj">
+		<view class="pdlr4 whiteBj" style="padding-top: 40rpx;">
 			<view class="flexRowBetween pdtb10">
 				<view @click="prev()"><image class="arrowR backIcon" style="margin-left: 0;" src="../../static/images/arrowL2.png" mode=""></image></view>
 				<view class="okBtn fs12 center white pubBj" @click="$Utils.stopMultiClick(userInfoUpdate)">确定</view>

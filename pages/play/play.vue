@@ -6,7 +6,7 @@
 				<view class="seachBtn"><button class="btn" type="submint"></button></view>
 				
 				<view class="input">
-					<input type="text" name="" value="" placeholder="搜索公交线路/车站" placeholder-class="placeholder" />
+					<input type="text" v-model="title" @confirm="search" placeholder="搜索周边游商品" placeholder-class="placeholder" />
 				</view>
 			</view>
 		</view>
@@ -62,8 +62,11 @@
 		data() {
 			return {
 				Router:this.$Router,
-				
-				mainData:[]
+				searchItem:{
+					thirdapp_id:2
+				},
+				mainData:[],
+				title:''
 			}
 		},
 		
@@ -84,12 +87,30 @@
 		 
 		methods: {
 			
-			getMainData() {
+			search(){
+				const self = this;				
+				if(self.title!=''){
+					self.searchItem.title = ['like',['%'+self.title+'%']]
+				}else{
+					delete self.searchItem.title
+				}
+				self.getMainData(true)
+			},
+			
+			getMainData(isNew) {
 				const self = this;
-				const postData = {};
-				postData.searchItem = {
-					thirdapp_id: 2,
+				if (isNew) {
+					self.mainData = [];
+					self.paginate = {
+						count: 0,
+						currentPage: 1,
+						is_page: true,
+						pagesize: 10
+					}
 				};
+				const postData = {};
+				postData.paginate = self.$Utils.cloneForm(self.paginate);
+				postData.searchItem = self.$Utils.cloneForm(self.searchItem);
 				postData.getBefore = {
 					caseData: {
 						tableName: 'Label',

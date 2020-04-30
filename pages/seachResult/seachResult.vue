@@ -14,7 +14,7 @@
 		<view class="mglr4 mgt20">
 			<view class="fs14 pdb10">线路</view>
 			<view class="notes radius10 fs13">
-				<view class="item flex" v-for="(item,index) in line" :key="index"  :data-id="item.id" 
+				<view class="item flex" v-for="(item,index) in line" :key="index"  :data-id="item.id" v-if="line.length>0" 
 				@click="Router.navigateTo({route:{path:'/pages/BusLineDetail/BusLineDetail?id='+$event.currentTarget.dataset.id}})">
 					<view><image class="CarIcon" src="../../static/images/search-icon.png" mode=""></image></view>
 					<view>{{item.name}}</view>
@@ -25,8 +25,8 @@
 		<view class="mglr4 mgt20">
 			<view class="fs14 pdb10">车站</view>
 			<view class="notes radius10 fs13">
-				<view class="item flex" v-for="(item,index) in stop" :key="index" 
-				@click="Router.navigateTo({route:{path:'/pages/linePlan/linePlan'}})">
+				<view class="item flex" v-for="(item,index) in stop" :key="index" :data-id="item.line_array" v-if="stop.length>0" 
+				@click="Router.navigateTo({route:{path:'/pages/linePlan/linePlan?id='+$event.currentTarget.dataset.id}})">
 					<view><image class="CarIcon" src="../../static/images/search-icon1.png" mode=""></image></view>
 					<view>{{item.name}}</view>
 				</view>
@@ -84,8 +84,8 @@
 						if(res.info.line.data&&res.info.line.data.length>0){
 							self.line = res.info.line.data;
 						}
-						if(res.info.stop.data&&res.info.stop.data.length>0){
-							self.stop = res.info.stop.data;
+						if(res.info.stop&&res.info.stop.length>0){
+							self.stop = res.info.stop;
 						}
 						
 					}

@@ -17,14 +17,20 @@
 		data() {
 			return {
 				Router:this.$Router,
-				object:{}
+				object:{},
+				covers: [{
+					latitude: '',
+					longitude: '',
+					iconPath: '../../static/images/line-icon3.png'
+				}]
 			}
 		},
 		onLoad() {
 			const self = this;
 			//self.$Utils.loadAll(['getMainData'], self);
-			 self.object = uni.getStorageSync('userInfo').thirdApp;
-			
+			self.object = uni.getStorageSync('userInfo').thirdApp;
+			self.covers[0].latitude = uni.getStorageSync('userInfo').thirdApp.latitude;
+			self.covers[0].longitude = uni.getStorageSync('userInfo').thirdApp.longitude;
 		},
 		
 		methods: {

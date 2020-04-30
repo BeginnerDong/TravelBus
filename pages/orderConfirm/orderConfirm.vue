@@ -44,7 +44,7 @@
 				<view class="item flex">
 					<view class="ll">手机：</view>
 					<view class="rr flex">
-						<input type="text" v-model="submitData.phone" placeholder="请输入手机号" placeholder-class="placeholder" />
+						<input type="number" maxlength="11" v-model="submitData.phone" placeholder="请输入手机号" placeholder-class="placeholder" />
 					</view>
 				</view>
 			</view>

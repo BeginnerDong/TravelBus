@@ -1,7 +1,7 @@
 <template>
 	<view>
 		
-		<view class="pageTit center pr flexRowBetween pdlr4 whiteBj borderB1" style="line-height: 44px;font-size: 16px;">
+		<view class="pageTit center pr flexRowBetween pdlr4 whiteBj borderB1" style="line-height: 44px;font-size: 16px;padding-top: 40rpx;">
 			<view @click="prev()"><image class="arrowR backIcon" style="margin-left: 0;" src="../../static/images/arrowL2.png" mode=""></image></view>
 			<view>安全设置</view>
 			<view><view class="fs12 pubColor flexEnd" 

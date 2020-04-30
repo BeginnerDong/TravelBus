@@ -31,6 +31,10 @@
 				</view>
 			</view>
 		</view>
+		
+		<view class="submitbtn" style="margin-top: 100rpx;">
+			<button class="btn" type="submint"  @click="loginOff">退出登录</button>
+		</view>
 	</view>
 </template>
 
@@ -60,6 +64,19 @@
 		},
 		
 		methods: {
+			
+			loginOff(){
+				const self = this;
+				if(self.type&&self.type=='driver'){
+					uni.removeStorageSync('driverToken');
+					uni.removeStorageSync('driverInfo');
+					self.Router.reLaunch({route:{path:'/pages/user/user'}})
+				}else{
+					uni.removeStorageSync('userToken');
+					uni.removeStorageSync('userInfo');
+					self.Router.redirectTo({route:{path:'/pages/user/user'}})
+				}
+			},
 			
 			getUserInfoData() {
 				const self = this;

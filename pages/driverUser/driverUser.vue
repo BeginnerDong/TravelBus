@@ -89,11 +89,18 @@
 				time:59
 			}
 		},
+		
 		onLoad() {
+			const self = this;
+			
+		},
+		
+		onShow() {
 			const self = this;
 			self.$Utils.loadAll(['getUserInfoData'], self);
 			clearInterval(self.interval)
 		},
+		
 		methods: {
 			
 			

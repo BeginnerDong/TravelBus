@@ -11,6 +11,7 @@
 				<view style="width: 70%;">
 					<view class="fs16 pdb5">{{userInfoData.name!=''?userInfoData.name:userInfoData.phone}}</view>
 				</view>
+				
 			</view>
 			<view class="infor flex" v-else>
 				<view>
@@ -19,7 +20,7 @@
 			</view>
 		</view>
 		<view class="myRowBetween">
-			<view class="item flexRowBetween" @click="Router.navigateTo({route:{path:'/pages/user-myPlay/user-myPlay'}})">
+			<view class="item flexRowBetween" v-if="isLogin" @click="Router.navigateTo({route:{path:'/pages/user-myPlay/user-myPlay'}})">
 				<view class="ll flex">
 					<image class="icon" src="../../static/images/about-icon2.png" mode=""></image>
 					<view class="">周边游</view>
@@ -28,7 +29,26 @@
 					<image class="arrowR" src="../../static/images/home-icon1.png" mode=""></image>
 				</view>
 			</view>
-			<view class="item flexRowBetween" @click="Router.navigateTo({route:{path:'/pages/user-byCar/user-byCar'}})">
+			<view class="item flexRowBetween" v-if="!isLogin" @click="showToast">
+				<view class="ll flex">
+					<image class="icon" src="../../static/images/about-icon2.png" mode=""></image>
+					<view class="">周边游</view>
+				</view>
+				<view class="rr">
+					<image class="arrowR" src="../../static/images/home-icon1.png" mode=""></image>
+				</view>
+			</view>
+			<view class="item flexRowBetween" v-if="isLogin" @click="Router.navigateTo({route:{path:'/pages/user-byCar/user-byCar'}})">
+				<view class="ll flex">
+					<image class="icon" src="../../static/images/about-icon3.png" mode=""></image>
+					<view class="">包车</view>
+				</view>
+				<view class="rr">
+					<image class="arrowR" src="../../static/images/home-icon1.png" mode=""></image>
+				</view>
+			</view>
+			
+			<view class="item flexRowBetween" v-if="!isLogin" @click="showToast">
 				<view class="ll flex">
 					<image class="icon" src="../../static/images/about-icon3.png" mode=""></image>
 					<view class="">包车</view>
@@ -114,6 +134,11 @@
 		},
 
 		methods: {
+			
+			showToast(){
+				const self = this;
+				self.$Utils.showToast('您暂未登录','none')
+			},
 
 			getUserInfoData() {
 				const self = this;

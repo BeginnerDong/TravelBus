@@ -4,7 +4,7 @@
 			<view class="item flexRowBetween">
 				<view class="ll">绑定车牌</view>
 				<view class="rr color6">
-					<input type="text" v-model="no" @confirm="getBusData" placeholder="请输入车牌" placeholder-class="placeholder">
+					<input type="text" v-model="no"  placeholder="请输入车牌" placeholder-class="placeholder">
 				</view>
 			</view>
 			<view class="item flexRowBetween">
@@ -16,12 +16,12 @@
 			</view>
 		</view>
 		
-		<!-- <view style="margin-top: 200rpx;">
+		<view style="margin-top: 200rpx;">
 			<view class="submitbtn">
-				<button class="btn" type="button">保存</button>
+				<button class="btn" type="button" @click="getBusData">保存</button>
 			</view>
 			
-			<view class="submitbtn mgt15">
+			<!-- <view class="submitbtn mgt15">
 				<button class="btn" type="button">编辑</button>
 			</view>
 			
@@ -32,18 +32,10 @@
 				<view class="submitbtn">
 					<button class="Wbtn" type="button">修改</button>
 				</view>
-			</view>
-		</view> -->
-		
-		<view class="black-bj" v-show="is_show"></view>
-		<view class="popupShow center whiteBj radius10 pdt20" v-show="is_popupShow">
-			<view class="tip-title mgb15 fs15">提示：</view>
-			<view class="fs13 color6 pdb20 borderB1">确定删除这条信息吗？</view>
-			<view class="flex tip-button">
-				<view class="item"  @click="popupShow">取消</view>
-				<view class="item pubColor">确定</view>
-			</view>
+			</view> -->
 		</view>
+		
+		
 		
 	</view>
 </template>

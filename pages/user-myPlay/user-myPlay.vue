@@ -35,12 +35,12 @@
 							<view class="price mgr10">{{item.price}}</view>
 							<view class="fs12 color6">×{{item.count}}</view>
 						</view>
-						<view class="underBtn flexEnd" v-if="item.pat_status==0">
-							<view class="Bbtn">去支付</view>
+						<view class="underBtn flexEnd" v-if="item.pay_status==0">
+							<view class="Bbtn" :data-id="item.id" @click="Router.navigateTo({route:{path:'/pages/orderPay/orderPay?id='+$event.currentTarget.dataset.id}})">去支付</view>
 						</view>
 						
-						<view class="underBtn flexEnd" v-if="item.order_step==1||item.order_step==2">
-							<view class="Bbtn" @click="Router.navigateTo({route:{path:'/pages/user-myPlay-refund/user-myPlay-refund'}})">退款</view>
+						<view class="underBtn flexEnd" v-if="item.order_step==0&&item.pay_status==1">
+							<view class="Bbtn" :data-id="item.id" @click="Router.navigateTo({route:{path:'/pages/user-myPlay-refund/user-myPlay-refund?id='+$event.currentTarget.dataset.id}})">退款</view>
 						</view>
 					</view>
 				</view>
@@ -155,6 +155,7 @@
 						delete self.searchItem.order_type;
 					}else if(self.current==2){
 						self.searchItem.pay_status = 0
+						delete self.searchItem.transport_status;
 						delete self.searchItem.order_type;
 					}else if(self.current==3){
 						self.searchItem.pay_status = 1

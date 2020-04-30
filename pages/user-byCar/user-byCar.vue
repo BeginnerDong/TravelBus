@@ -72,7 +72,7 @@
 					type:2
 				};
 				postData.paginate = self.$Utils.cloneForm(self.paginate);
-				
+				postData.tokenFuncName = 'getUserToken';
 				const callback = (res) => {
 					if (res.info.data.length > 0) {
 						self.mainData.push.apply(self.mainData, res.info.data);

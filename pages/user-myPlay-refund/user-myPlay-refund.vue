@@ -5,15 +5,16 @@
 			<view class="proRow">
 				<view class="item">
 					<view class="fs12 flexRowBetween mgb10">
-						<view class="color9">交易时间：2020-01-18</view>
-						<view class="red">退款</view>
+						<view class="color9">交易时间：{{mainData.create_time}}</view>
+						<view class="red">已付款</view>
 					</view>
 					<view class="flexRowBetween">
 						<view class="pic">
-							<image src="../../static/images/orderPaly-img1.png" mode=""></image>
+							<image :src="item.orderItem&&item.orderItem[0]&&item.orderItem[0].snap_product&&
+							item.orderItem[0].snap_product.mainImg&&item.orderItem[0].snap_product.mainImg[0]?item.orderItem[0].snap_product.mainImg[0].url:''" mode=""></image>
 						</view>
 						<view class="infor">
-							<view class="avoidOverflow4 fs12">[西安1牛背梁] 国家级森林公园，世界生物圈保护区！仅298元=2大人1小抢牛背梁套票~享含双床房1晚+门票2张+双早+免费停车！</view>
+							<view class="avoidOverflow4 fs12">{{mainData.title}}</view>
 						</view>
 					</view>
 				</view>
@@ -21,14 +22,14 @@
 			
 			<view class="whiteBj pdlr4 pdt15 pdb15">
 				<view class="f5bj">
-					<textarea value="" placeholder="填写退款原因" placeholder-class="placeholder" />
+					<textarea v-model="passage2" placeholder="填写退款原因" placeholder-class="placeholder" />
 				</view>
 			</view>
 			
 		</view>
 		
 		<view class="submitbtn" style="margin-top:200rpx;">
-			<button class="btn" type="button">提交</button>
+			<button class="btn" type="button" @click="refund">提交</button>
 		</view>
 		
 	</view>
@@ -41,14 +42,73 @@
 				Router:this.$Router,
 				showView: false,
 				score:'',
-				wx_info:{}
+				wx_info:{},
+				passage2:''
 			}
 		},
+		
 		onLoad() {
 			const self = this;
-			//self.$Utils.loadAll(['getMainData'], self);
+			self.$Utils.loadAll(['getMainData'], self);
 		},
+		
 		methods: {
+			
+			getMainData() {
+				const self = this;
+				const postData = {};
+				postData.tokenFuncName = 'getUserToken';
+				postData.searchItem = {
+					thirdapp_id: 2,
+					id:self.id
+				};
+				postData.getAfter = {
+					orderItem:{
+						tableName:'OrderItem',
+						middleKey:'order_no',
+						key:'order_no',
+						searchItem:{
+							status:1
+						},
+						condition:'='
+					},
+				};
+				const callback = (res) => {
+					if (res.info.data.length > 0) {
+						self.mainData = res.info.data[0]
+					}
+					self.$Utils.finishFunc('getMainData');
+					console.log('self.mainData', self.mainData)
+				};
+				self.$apis.orderGet(postData, callback);
+			},
+			
+			refund() {
+				const self = this;		
+				const postData = {};			
+				postData.searchItem = {
+					order_no:self.mainData.order_no
+				};		
+				postData.data = {
+					passage1:self.passage2,
+					order_step:1
+				};
+				postData.tokenFuncName = 'getUserToken';			
+				const callback = (res) => {
+					if(res.solely_code==100000){
+						self.$Utils.showToast('申请成功','none',1000);	
+						setTimeout(function() {
+							uni.navigateBack({
+								delta:1
+							})
+						}, 1000);
+					}else{
+						self.$Utils.showToast(res.msg,'none');
+					}
+				};
+				self.$apis.orderUpdate(postData, callback);
+			},
+			
 		},
 	};
 </script>
