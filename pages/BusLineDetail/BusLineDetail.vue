@@ -30,7 +30,7 @@
 		</view>
 
 		<view class="mglr4 pdtb15 whiteBj radius10 mgt15">
-			<view class="pdlr4 flexColumn pubColor" v-if="busInfo.rest_time">
+			<view class="pdlr4 flexColumn pubColor" v-if="busInfo.rest_time||busInfo.rest_time==0">
 				<view>预计时间<span class="fs24 ftw mgl10">{{busInfo.rest_time||busInfo.rest_time==0?busInfo.rest_time:''}}</span>分</view>
 				<view class="mgt5 fs12">{{busInfo.rest_stop||busInfo.rest_stop==0?busInfo.rest_stop:''}}站/{{busInfo.rest_distance||busInfo.rest_distance==0?busInfo.rest_distance:''}}米</view>
 			</view>
@@ -107,7 +107,8 @@
 		onLoad(options) {
 			const self = this;
 			self.id = options.id;
-			self.$Utils.loadAll(['getLineData', 'getLocation'], self);
+			self.$Utils.loadAll(['getLineData','getLocation'], self);
+			self.getMainData()
 		},
 
 		onPullDownRefresh() {
@@ -198,7 +199,7 @@
 					},
 					fail() {
 						uni.showToast({
-							title: 'fail啊啊啊'
+							title: 'fail'
 						});
 					}
 				});
@@ -215,7 +216,6 @@
 					line_no: self.id,
 					longitude: self.melongitude,
 					latitude: self.melatitude,
-
 				};
 				postData.data.direction = self.direction;
 				console.log('postData',postData)

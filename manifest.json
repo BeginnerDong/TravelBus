@@ -69,6 +69,22 @@
                     }
                 }
             }
+        },
+        "nativePlugins" : {
+            "Lele-Location" : {
+                "__plugin_info__" : {
+                    "name" : "Android原生定位插件",
+                    "description" : "Android原生定位服务插件（封装的是高德定位sdk，在uniapp项目下请选择高德定位地图）",
+                    "platforms" : "Android",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=1470",
+                    "android_package_name" : "uni.UNI56DF11E",
+                    "ios_bundle_id" : "io.dcloud.appleBus",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "1470",
+                    "parameters" : {}
+                }
+            }
         }
     },
     /* SDK配置 */

@@ -29,7 +29,7 @@
 								<view class="right">{{item.stop&&item.stop[1]?item.stop[1].name:''}}</view>
 							</view>
 							<!-- 展示内容 -->
-							<view class="line" v-for="(c_item,c_index) in item.stop" :key="index" v-if="is_lineShow&&c_index!=0&&c_index!=1&&c_index!=item.stop.length-1">
+							<view class="line" v-for="(c_item,c_index) in item.stop" :key="c_index" v-if="is_lineShow&&c_index!=0&&c_index!=1&&c_index!=item.stop.length-1">
 								<view class="left"></view>
 								<view class="dian"></view>
 								<view class="right">{{c_item.name}}</view>
