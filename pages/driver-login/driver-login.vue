@@ -62,6 +62,7 @@
 							console.log(res);
 							uni.setStorageSync('driverToken', res.token);
 							uni.setStorageSync('driverInfo', res.info);
+							
 							uni.redirectTo({
 								url: '/pages/driverUser/driverUser'
 							})

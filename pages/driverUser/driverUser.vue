@@ -104,7 +104,7 @@
 
 		onLoad() {
 			const self = this;
-
+			//self.wakeLock()
 		},
 
 		onShow() {
@@ -121,7 +121,19 @@
 
 		methods: {
 
-
+			 
+			//允许程序后台运行，以持续获取GPS位置  
+			wakeLock() {  
+			    //Android  
+				var g_wakelock = null; 
+			    var main = plus.android.runtimeMainActivity();  
+			    var Context = plus.android.importClass("android.content.Context");  
+			    var PowerManager = plus.android.importClass("android.os.PowerManager");  
+			    var pm = main.getSystemService(Context.POWER_SERVICE);  
+			    g_wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "ANY_NAME");  
+			    g_wakelock.acquire();  
+			},
+			
 			getLocationPermission() {
 				let self = this
 				console.log('start')
@@ -209,11 +221,18 @@
 					if (data.solely_code == 100000) {
 						uni.setStorageSync('canClick', true);
 						self.getUserInfoData();
+						uni.setStorageSync('isWork', self.submitData.is_work);
 						if (self.submitData.is_work == 1) {
-							
-							self.getLocationPermission()
+							self.interval = setInterval(function(){
+							  //self.getLocation()
+							  self.time++
+							  console.log(self.time)
+							},5000)
+							//self.getLocationPermission()
 						} else {
-							leleLocation.stop()
+							clearInterval(uni.getStorageSync('intervalId'));
+							uni.removeStorageSync('intervalId');
+							//leleLocation.stop()
 						}
 
 					} else {
@@ -224,7 +243,7 @@
 				self.$apis.busUpdate(postData, callback);
 			},
 
-			/* getLocation() {
+			getLocation() {
 				const self = this;
 				uni.getLocation({
 					type: 'wgs84',
@@ -237,7 +256,7 @@
 					}
 				});
 				self.$Utils.finishFunc('getLocation');
-			}, */
+			},
 
 			busUpdateTwo() {
 				const self = this;
@@ -296,12 +315,15 @@
 						self.userInfoData = res.info.data[0];
 						if (self.userInfoData.bus[0] && self.userInfoData.bus[0].is_work == 1) {
 							self.submitData.is_work = 1
-							/* self.interval = setInterval(function() {
-								self.getLocation()
-								//self.time--
-							}, 10000);
-							uni.setStorageSync('intervalId', self.interval) */
-							self.getLocationPermission()
+							uni.setStorageSync('isWork', self.submitData.is_work);
+							self.interval = setInterval(function() {
+								//self.getLocation()
+								self.time++
+								 console.log(self.time)
+							}, 5000);
+							uni.setStorageSync('intervalId', self.interval)
+							//self.getLocationPermission()
+							//self.getLocation()
 						}
 					};
 					console.log('self.userInfoData', self.userInfoData)

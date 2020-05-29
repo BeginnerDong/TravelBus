@@ -2,6 +2,8 @@
 	<view>
 		
 		<view>当前经度:{{melongitude}},当前纬度:{{melatitude}}</view>
+		<view>当前车辆经度:{{busInfo.longitude}},当前纬度:{{busInfo.latitude}}</view>
+		<view>车辆位置更新时间:{{busInfo.update_time}}</view>
 		<map style="width: 100%; height: 500rpx;" id="map"  :latitude="covers[0].latitude" :longitude="covers[0].longitude"
 		 :markers="covers">
 		</map>
@@ -38,7 +40,7 @@
 				<view class="mgt5 fs12">该方向暂无运行车辆</view>
 			</view>
 		</view>
-
+		
 		<view class="stationLis">
 
 			<scroll-view class="scroll-item" scroll-x>
@@ -114,7 +116,7 @@
 		onPullDownRefresh() {
 			console.log('refresh');
 			const self = this;
-			self.getMainData();
+			self.getLocation();
 
 		},
 		

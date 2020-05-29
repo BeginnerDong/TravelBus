@@ -16,7 +16,8 @@
         },
         "modules" : {
             "Maps" : {},
-            "Payment" : {}
+            "Payment" : {},
+            "Push" : {}
         },
         /* 模块配置 */
         "distribute" : {
@@ -60,7 +61,9 @@
                         "UniversalLinks" : "https://demo.dcloud.net.cn/ulink/"
                     }
                 },
-                "push" : {},
+                "push" : {
+                    "unipush" : {}
+                },
                 "ad" : {},
                 "maps" : {
                     "amap" : {
