@@ -224,10 +224,10 @@
 						uni.setStorageSync('isWork', self.submitData.is_work);
 						if (self.submitData.is_work == 1) {
 							self.interval = setInterval(function(){
-							  //self.getLocation()
-							  self.time++
-							  console.log(self.time)
-							},5000)
+							  self.getLocation()
+							  
+							},10000)
+							uni.setStorageSync('intervalId', self.interval)
 							//self.getLocationPermission()
 						} else {
 							clearInterval(uni.getStorageSync('intervalId'));
@@ -317,10 +317,10 @@
 							self.submitData.is_work = 1
 							uni.setStorageSync('isWork', self.submitData.is_work);
 							self.interval = setInterval(function() {
-								//self.getLocation()
-								self.time++
-								 console.log(self.time)
-							}, 5000);
+								self.getLocation()
+								//self.time++
+								 //console.log(self.time)
+							}, 10000);
 							uni.setStorageSync('intervalId', self.interval)
 							//self.getLocationPermission()
 							//self.getLocation()
