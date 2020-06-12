@@ -48,7 +48,7 @@
 					<view class="flex" style="align-items: flex-start;">
 						<view class="line" v-for="(item,index) in line" :key="index" :class="item.id==busInfo.last_stop?'on':''">
 							<view class="Gps">
-								<image class="carIcon" :style="busInfo.stop_distance-busInfo.bus_distance<10?'margin-left: 10rpx':'margin-left: 70rpx'"
+								<image class="carIcon" :style="busInfo.stop_distance-busInfo.bus_distance<10?(busInfo.rest_distance==0?'margin-left: 10rpx':'margin-left: 70rpx'):'margin-left: 70rpx'"
 								 v-if="item.id==busInfo.last_stop" src="../../static/images/line-icon2.1.png" mode=""></image>
 								<image class="currIcon" style="margin-left: 10rpx;" :src="nearStop.id==item.id?'../../static/images/line-icon3.png':''"
 								 mode=""></image>

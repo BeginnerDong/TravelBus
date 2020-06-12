@@ -50,7 +50,10 @@
 				</view>
 			</view>
 		</view>
-		<view>当前经度:{{melongitude}},当前纬度:{{melatitude}} 已更新{{time}}次</view>
+		<view>当前经度:{{melongitude}},当前纬度:{{melatitude}}</view>
+		<view>getLocation次数:{{getLocationTime}}</view>
+		<view>update次数:{{time}}</view>
+		<view>错误信息：{{errMsg}}+{{errTime}}</view>
 		<!--底部tab键-->
 		<view class="navbar">
 			<view class="navbar_item" @click="Router.redirectTo({route:{path:'/pages/index/index'}})">
@@ -98,13 +101,17 @@
 				},
 				melongitude: '',
 				melatitude: '',
-				time: 0
+				time: 0,
+				errMsg:'暂无',
+				errTime:0,
+				getLocationTime:0,
+				isAjax:true
 			}
 		},
 
 		onLoad() {
 			const self = this;
-			//self.wakeLock()
+			
 		},
 
 		onShow() {
@@ -223,11 +230,12 @@
 						self.getUserInfoData();
 						uni.setStorageSync('isWork', self.submitData.is_work);
 						if (self.submitData.is_work == 1) {
-							self.interval = setInterval(function(){
+							//self.getLocation()
+							/* self.interval = setInterval(function(){
 							  self.getLocation()
 							  
-							},10000)
-							uni.setStorageSync('intervalId', self.interval)
+							},3000)
+							uni.setStorageSync('intervalId', self.interval) */
 							//self.getLocationPermission()
 						} else {
 							clearInterval(uni.getStorageSync('intervalId'));
@@ -245,14 +253,25 @@
 
 			getLocation() {
 				const self = this;
+				/* self.melongitude = '';
+				self.melatitude = ''; */
 				uni.getLocation({
 					type: 'wgs84',
 					success: function(res) {
-						self.melongitude = res.longitude;
-						self.melatitude = res.latitude;
-						
-						
-						self.busUpdateTwo()
+						console.log(res)
+						self.getLocationTime++
+						console.log('self.melongitude',res.longitude)
+						console.log('self.melatitude',res.latitude)
+						if(uni.getStorageSync('carLatitude')!=res.latitude||uni.getStorageSync('carLongitude')!=res.longitude){
+							self.melongitude = res.longitude;
+							self.melatitude = res.latitude;
+							uni.setStorageSync('carLatitude',res.latitude);
+							uni.setStorageSync('carLongitude',res.longitude);
+							self.busUpdateTwo()
+						};
+					},
+					fail(res) {
+						console.log(res)
 					}
 				});
 				self.$Utils.finishFunc('getLocation');
@@ -260,8 +279,12 @@
 
 			busUpdateTwo() {
 				const self = this;
+				if(!self.isAjax){
+					return
+				};
+				self.isAjax = false;
 				uni.setStorageSync('canClick', false);
-
+				
 				const postData = {};
 				postData.tokenFuncName = 'getDriverToken';
 				postData.searchItem = {
@@ -272,13 +295,22 @@
 					longitude: self.melongitude,
 					latitude: self.melatitude
 				};
+				
 				const callback = (data) => {
+					console.log('data',data);
+					self.isAjax = true;
 					if (data.solely_code == 100000) {
 						self.time++
+						console.log(self.time)
 						uni.setStorageSync('canClick', true);
 					} else {
+						//clearInterval(uni.getStorageSync('intervalId'));
 						uni.setStorageSync('canClick', true);
-						self.$Utils.showToast(data.msg, 'none', 1000)
+						
+						
+						self.$Utils.showToast(data.msg, 'none', 1000);
+						self.errMsg = data.msg;
+						self.errTime ++
 					}
 				};
 				self.$apis.busUpdate(postData, callback);
@@ -316,11 +348,12 @@
 						if (self.userInfoData.bus[0] && self.userInfoData.bus[0].is_work == 1) {
 							self.submitData.is_work = 1
 							uni.setStorageSync('isWork', self.submitData.is_work);
+							self.getLocation();
 							self.interval = setInterval(function() {
 								self.getLocation()
 								//self.time++
 								 //console.log(self.time)
-							}, 10000);
+							}, 3000);
 							uni.setStorageSync('intervalId', self.interval)
 							//self.getLocationPermission()
 							//self.getLocation()
