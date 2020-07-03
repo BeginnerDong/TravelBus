@@ -108,6 +108,10 @@
 
 		onLoad(options) {
 			const self = this;
+			if (uni.getStorageSync('userIntervalId')) {
+				clearInterval(uni.getStorageSync('userIntervalId'));
+			};
+			uni.removeStorageSync('userIntervalId');
 			self.id = options.id;
 			self.$Utils.loadAll(['getLineData','getLocation'], self);
 			self.getMainData()
@@ -227,7 +231,10 @@
 						self.line = res.info.line;
 						self.nearStop = res.info.stop;
 						self.busInfo = res.info.bus;
-
+						self.interval = setInterval(function() {
+							self.getLocation()
+						}, 3000);
+						uni.setStorageSync('userIntervalId', self.interval)
 					} else {
 						self.$Utils.showToast(res.msg, 'none', 1000)
 					}
